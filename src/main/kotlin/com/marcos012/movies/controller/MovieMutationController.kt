@@ -20,15 +20,15 @@ import org.springframework.web.bind.annotation.RestController
 class MovieMutationController(val movieService: MovieMutationService, val movieRepository: MovieRepository) {
 
     @PostMapping
-    fun createMovie(@RequestBody movie: MovieDTO): ResponseEntity<Long> {
-        val movieId = movieService.createMovie(movie)
-        return ResponseEntity(movieId, HttpStatus.CREATED)
+    fun createMovie(@RequestBody movieDTO: MovieDTO): ResponseEntity<MovieDTO> {
+        val movie = movieService.createMovie(movieDTO)
+        return ResponseEntity(movie, HttpStatus.CREATED)
     }
 
     @PutMapping("{id}")
-    fun updateMovie(@PathVariable id: Long, @RequestBody movie: MovieDTO): ResponseEntity<Long> {
-        val movieId = movieService.updateMovie(id, movie)
-        return ResponseEntity(movieId, HttpStatus.OK)
+    fun updateMovie(@PathVariable id: Long, @RequestBody movie: MovieDTO): ResponseEntity<MovieDTO> {
+        val updatedMovie = movieService.updateMovie(id, movie)
+        return ResponseEntity(updatedMovie, HttpStatus.OK)
     }
 
     @DeleteMapping("{id}")

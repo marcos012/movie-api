@@ -20,7 +20,7 @@ class MovieQueryController(val movieService: MovieQueryService) {
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "20") limit: Int,
         @RequestParam(required = false, defaultValue = "ASC") sort: Sort.Direction,
-        @RequestParam(required = false, defaultValue = "name") orderBy: String,
+        @RequestParam(required = false, defaultValue = "title") orderBy: String,
     ): ResponseEntity<Page<MovieDTO>> {
         val pageable = PageRequest.of(
             page,

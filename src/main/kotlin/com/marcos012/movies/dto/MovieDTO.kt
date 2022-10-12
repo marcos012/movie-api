@@ -1,13 +1,25 @@
 package com.marcos012.movies.dto
 
+import com.marcos012.movies.model.MovieType
+import com.marcos012.movies.model.Rating
+import org.springframework.hateoas.RepresentationModel
+import java.math.BigDecimal
 import java.util.*
 
-data class MovieDTO(
+
+open class MovieDTO(
     val id: Long,
-    val name: String,
-    val description: String,
-    val imdb: Double,
-    val releaseDate: Date,
-    val producer: String,
-    val imageUrl: String
-)
+    var title: String,
+    var plot: String,
+    var genre: String,
+    var imdb: BigDecimal,
+    var released: Date,
+    var producer: String,
+    var poster: String,
+    var type: MovieType,
+    var actors: String?,
+    var director: String?,
+    var runtime: String?,
+    var ratings: List<Rating>?,
+    var totalSeasons: String?
+) : RepresentationModel<MovieDTO>()

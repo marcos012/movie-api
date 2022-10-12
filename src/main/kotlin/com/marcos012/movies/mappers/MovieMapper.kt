@@ -8,23 +8,38 @@ class MovieMapper {
         fun toMovieDTO(movie: Movie): MovieDTO {
             return MovieDTO(
                 movie.id!!,
-                movie.name,
-                movie.description,
+                movie.title,
+                movie.plot,
+                movie.genre,
                 movie.imdb,
-                movie.releaseDate,
+                movie.released,
                 movie.producer,
-                movie.imageUrl
+                movie.poster,
+                movie.type,
+                movie.actors,
+                movie.director,
+                movie.runtime,
+                movie.ratings,
+                movie.totalSeasons
             )
         }
 
         fun toMovie(movie: MovieDTO): Movie {
             return Movie(
-                movie.name,
-                movie.description,
+                movie.title,
+                movie.plot,
+                movie.genre,
                 movie.imdb,
-                movie.releaseDate,
+                movie.released,
+//                movie.year,
                 movie.producer,
-                movie.imageUrl
+                movie.poster,
+                movie.type,
+                movie.actors,
+                movie.director,
+                movie.runtime,
+                movie.ratings,
+                movie.totalSeasons
             )
         }
     }

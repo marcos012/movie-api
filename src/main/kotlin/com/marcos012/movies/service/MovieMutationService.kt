@@ -1,30 +1,51 @@
 package com.marcos012.movies.service
 
+import com.marcos012.movies.controller.MovieQueryController
 import com.marcos012.movies.dto.MovieDTO
-import com.marcos012.movies.mappers.MovieMapper
 import com.marcos012.movies.infra.repository.MovieRepository
-import org.springframework.data.crossstore.ChangeSetPersister
+import com.marcos012.movies.mappers.MovieMapper
+import org.springframework.hateoas.server.mvc.linkTo
 import org.springframework.stereotype.Service
 import javax.persistence.EntityNotFoundException
 
 @Service
 class MovieMutationService(private val movieRepository: MovieRepository) {
 
-    fun createMovie(movieDTO: MovieDTO): Long? {
-        val movie = MovieMapper.toMovie(movieDTO)
-        return movieRepository.save(movie).id
+    fun createMovie(command: MovieDTO): MovieDTO {
+        val convertedMovie = MovieMapper.toMovie(command)
+        val movie = MovieMapper.toMovieDTO(movieRepository.save(convertedMovie))
+
+        addHateoas(movie)
+
+        return movie
     }
 
-    fun updateMovie(id: Long, movieDTO: MovieDTO): Long? {
+    fun updateMovie(id: Long, movieDTO: MovieDTO): MovieDTO {
         val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
 
-        movie.name = movieDTO.name
+        movie.title = movieDTO.title
+        movie.plot = movieDTO.plot
         movie.imdb = movieDTO.imdb
-        movie.description = movieDTO.description
+        movie.genre = movieDTO.genre
+        movie.released = movieDTO.released
         movie.producer = movieDTO.producer
-        movie.releaseDate = movieDTO.releaseDate
-        movie.imageUrl = movieDTO.imageUrl
+        movie.poster = movieDTO.poster
+        movie.type = movieDTO.type
+        movie.actors = movieDTO.actors
+        movie.director = movieDTO.director
+        movie.runtime = movieDTO.runtime
+        movie.ratings = movieDTO.ratings
+        movie.totalSeasons = movieDTO.totalSeasons
 
-        return movieRepository.save(movie).id
+        val convertedMovie = MovieMapper.toMovieDTO(movieRepository.save(movie))
+
+        addHateoas(convertedMovie)
+
+        return convertedMovie
+    }
+
+    private fun addHateoas(movie: MovieDTO) {
+        val link = linkTo<MovieQueryController> { getMovie(movie.id) }.withSelfRel()
+        movie.add(link)
     }
 }
