@@ -2,10 +2,11 @@ package com.marcos012.movies.service
 
 import com.marcos012.movies.dto.MovieDTO
 import com.marcos012.movies.infra.client.IOmdbClient
+import com.marcos012.movies.infra.projection.MovieListProjection
 import com.marcos012.movies.infra.projection.OmdbMovieProjection
-import com.marcos012.movies.infra.projection.OmdbMovieSearchProjection
 import com.marcos012.movies.mappers.MovieMapper
 import com.marcos012.movies.infra.repository.MovieRepository
+import com.marcos012.movies.mappers.OmdbMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -21,9 +22,10 @@ class MovieQueryService(
     @Value("\${omdb.apikey}")
     val apiKey: String = ""
 
-    override fun getAllMovies(page: PageRequest, title: String): Page<MovieDTO> {
-        return movieRepository.findAllMovies(title, page).map {
-            MovieMapper.toMovieDTO(it)
+    override fun getAllMovies(page: PageRequest, title: String): Page<MovieListProjection> {
+        val movies =  movieRepository.findAllMovies(title, page)
+        return movies.map {
+            MovieMapper.toMovieProjection(it)
         }
     }
 
@@ -32,11 +34,13 @@ class MovieQueryService(
         return MovieMapper.toMovieDTO(movie)
     }
 
-    override fun getMovieByTitle(title: String): OmdbMovieProjection {
-        return omdbClient.getMovieByTitle(apiKey, title)
+    override fun getMovieByTitle(title: String): MovieDTO {
+        return OmdbMapper.toMovieDTO(omdbClient.getMovieByTitle(apiKey, title))
     }
 
-    override fun searchMoviesByTitle(title: String): OmdbMovieSearchProjection {
-        return omdbClient.searchMoviesByTitle(apiKey, title)
+    override fun searchMoviesByTitle(title: String): List<MovieListProjection> {
+        return omdbClient.searchMoviesByTitle(apiKey, title).search.map {
+            OmdbMapper.toMovieList(it)
+        }
     }
 }
