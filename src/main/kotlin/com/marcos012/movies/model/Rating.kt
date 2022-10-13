@@ -9,10 +9,10 @@ import javax.persistence.*
 @Table(name = "RATING")
 class Rating(
     @Column(name = "SOURCE")
-    val source: String,
+    var source: String,
     @Column(name = "RATING")
     @JsonProperty("value")
-    val rating: String
+    var rating: String
 ) {
     @Id
     @Column(name = "OID_RATING", nullable = false)

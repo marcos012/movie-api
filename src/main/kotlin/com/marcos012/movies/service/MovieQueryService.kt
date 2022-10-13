@@ -16,27 +16,27 @@ import javax.persistence.EntityNotFoundException
 class MovieQueryService(
     private val movieRepository: MovieRepository,
     private val omdbClient: IOmdbClient
-) {
+) : IMovieQueryService {
 
     @Value("\${omdb.apikey}")
     val apiKey: String = ""
 
-    fun getAllMovies(page: PageRequest): Page<MovieDTO> {
-        return movieRepository.findAll(page).map {
+    override fun getAllMovies(page: PageRequest, title: String): Page<MovieDTO> {
+        return movieRepository.findAllMovies(title, page).map {
             MovieMapper.toMovieDTO(it)
         }
     }
 
-    fun getMovie(id: Long): MovieDTO {
+    override fun getMovie(id: Long): MovieDTO {
         val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
         return MovieMapper.toMovieDTO(movie)
     }
 
-    fun getMovieByTitle(title: String): OmdbMovieProjection {
+    override fun getMovieByTitle(title: String): OmdbMovieProjection {
         return omdbClient.getMovieByTitle(apiKey, title)
     }
 
-    fun searchMoviesByTitle(title: String): OmdbMovieSearchProjection {
+    override fun searchMoviesByTitle(title: String): OmdbMovieSearchProjection {
         return omdbClient.searchMoviesByTitle(apiKey, title)
     }
 }
