@@ -4,12 +4,10 @@
 </div>
 
 ## Stack
-<p>
-  <img alt="Spring Boot" src="https://img.shields.io/static/v1?style=for-the-badge&message=Spring+Boot&color=6DB33F&logo=Spring+Boot&logoColor=FFFFFF&label=" />
-  <img alt="Kotlin" src="https://img.shields.io/static/v1?style=for-the-badge&message=Kotlin&color=7F52FF&logo=Kotlin&logoColor=FFFFFF&label=" />
-</p>
+![Kotlin](https://img.shields.io/static/v1?style=for-the-badge&message=Kotlin&color=7F52FF&logo=Kotlin&logoColor=FFFFFF&label=)
+![Spring Boot](https://img.shields.io/static/v1?style=for-the-badge&message=Spring+Boot&color=6DB33F&logo=Spring+Boot&logoColor=FFFFFF&label=)
 
-## Documentação
+## Docs
 This project are using Swagger for documentation, when project start, access http://localhost:8080/swagger-ui.html
 
 ## Setup
@@ -17,6 +15,3 @@ Java 11
 
 ## License
 [MIT - © Marcos Paulo 2022](LICENSE)
-
-
-

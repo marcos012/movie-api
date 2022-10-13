@@ -31,7 +31,6 @@ class MovieMapper {
                 movie.genre,
                 movie.imdb,
                 movie.released,
-//                movie.year,
                 movie.producer,
                 movie.poster,
                 movie.type,

@@ -21,5 +21,6 @@ class UserMovieListService(val movieRepository: MovieRepository, val userMovieRe
         movieRepository.findById(movieId).orElseThrow { EntityNotFoundException() }
 
         val userMovie = UserMovieList(UserMovieId(movieId, userId))
-        userMovieRepository.save(userMovie)    }
+        userMovieRepository.save(userMovie)
+    }
 }

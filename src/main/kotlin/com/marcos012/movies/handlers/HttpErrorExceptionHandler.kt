@@ -20,9 +20,6 @@ import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.servlet.HandlerMapping
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.*
 import javax.persistence.EntityNotFoundException
 
 
@@ -88,11 +85,13 @@ class HttpErrorExceptionHandler {
 
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(
-        MethodArgumentTypeMismatchException::class, MethodArgumentNotValidException::class
+        MethodArgumentTypeMismatchException::class,
+        MethodArgumentNotValidException::class
     )
     @ResponseBody
     fun invalidParamException(
-        e: MethodArgumentTypeMismatchException, request: WebRequest
+        e: MethodArgumentTypeMismatchException,
+        request: WebRequest
     ): ResponseEntity<*> {
         logger.error("Invalid param - name: ${e.name} - value: ${e.value}", e)
         val isEnum = e.requiredType!!.isEnum
@@ -107,7 +106,8 @@ class HttpErrorExceptionHandler {
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun httpMessageNotReadableException(
-        e: HttpMessageNotReadableException, request: WebRequest
+        e: HttpMessageNotReadableException,
+        request: WebRequest
     ): ResponseEntity<*> {
         return when (val cause = e.cause) {
             is MissingKotlinParameterException -> handleMissingKotlinParameterException(cause)
@@ -122,8 +122,7 @@ class HttpErrorExceptionHandler {
     @ResponseStatus(FORBIDDEN)
     @ResponseBody
     @ExceptionHandler(BadRequest::class)
-    fun badRequestException(exception: BadRequest) =
-        ApiError.fromMessage(FORBIDDEN, exception.message)
+    fun badRequestException(exception: BadRequest) = ApiError.fromMessage(FORBIDDEN, exception.message)
 
     private fun handleJsonMappingException(error: JsonMappingException): ResponseEntity<ApiError> {
         val maxLengthError = "Number max length"
@@ -158,8 +157,9 @@ class HttpErrorExceptionHandler {
     }
 
     private fun pathVariableInvalidParam(request: WebRequest, param: String): Boolean {
-        val variables =
-            (request as ServletWebRequest).request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) as Map<*, *>
+        val variables = (request as ServletWebRequest)
+            .request
+            .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) as Map<*, *>
 
         return variables.containsKey(param)
     }

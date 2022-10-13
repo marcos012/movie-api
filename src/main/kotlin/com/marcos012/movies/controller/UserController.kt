@@ -2,8 +2,6 @@ package com.marcos012.movies.controller
 
 import com.marcos012.movies.dto.MovieDTO
 import com.marcos012.movies.infra.repository.UserMovieRepository
-import com.marcos012.movies.model.UserMovieId
-import com.marcos012.movies.model.UserMovieList
 import com.marcos012.movies.service.UserMovieListService
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.HttpStatus
@@ -28,9 +26,7 @@ class UserController(
     }
 
     @GetMapping("movie-list")
-    fun getMovieList(
-        @RequestHeader(AUTHORIZATION) userId: Long,
-    ): ResponseEntity<List<MovieDTO>> {
+    fun getMovieList(@RequestHeader(AUTHORIZATION) userId: Long): ResponseEntity<List<MovieDTO>> {
         val movies = userMovieListService.getUserMovieList(userId)
         return ResponseEntity(movies, HttpStatus.OK)
     }

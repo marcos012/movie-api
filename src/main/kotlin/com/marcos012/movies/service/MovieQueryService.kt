@@ -21,8 +21,8 @@ class MovieQueryService(
     @Value("\${omdb.apikey}")
     val apiKey: String = ""
 
-    fun getAllMovies(page: PageRequest): Page<MovieDTO> {
-        return movieRepository.findAll(page).map {
+    fun getAllMovies(page: PageRequest, title: String): Page<MovieDTO> {
+        return movieRepository.findAllMovies(title, page).map {
             MovieMapper.toMovieDTO(it)
         }
     }
