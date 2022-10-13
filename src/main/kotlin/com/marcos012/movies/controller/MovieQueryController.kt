@@ -1,6 +1,7 @@
 package com.marcos012.movies.controller
 
 import com.marcos012.movies.dto.MovieDTO
+import com.marcos012.movies.infra.projection.MovieListProjection
 import com.marcos012.movies.infra.projection.OmdbMovieProjection
 import com.marcos012.movies.infra.projection.OmdbMovieSearchProjection
 import com.marcos012.movies.service.MovieQueryService
@@ -24,7 +25,7 @@ class MovieQueryController(val movieService: MovieQueryService) {
         @RequestParam(required = false, defaultValue = "20") limit: Int,
         @RequestParam(required = false, defaultValue = "ASC") sort: Sort.Direction,
         @RequestParam(required = false, defaultValue = "title") orderBy: String,
-    ): ResponseEntity<Page<MovieDTO>> {
+    ): ResponseEntity<Page<MovieListProjection>> {
         val pageable = PageRequest.of(
             page,
             limit,
@@ -40,12 +41,12 @@ class MovieQueryController(val movieService: MovieQueryService) {
     }
 
     @GetMapping("v1/omdb/movies")
-    fun searchMovieByTitle(@RequestParam(value = "title") title: String): OmdbMovieSearchProjection {
+    fun searchMovieByTitle(@RequestParam(value = "title") title: String): List<MovieListProjection>  {
         return movieService.searchMoviesByTitle(title)
     }
 
     @GetMapping("v1/omdb/movie")
-    fun getMovieByTitle(@RequestParam(value = "title") title: String): OmdbMovieProjection {
+    fun getMovieByTitle(@RequestParam(value = "title") title: String): MovieDTO {
         return movieService.getMovieByTitle(title)
     }
 }

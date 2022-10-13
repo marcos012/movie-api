@@ -60,7 +60,7 @@ class Movie(
 
     fun changePersonalRating(rating: Rating) {
         if (rating.source != "personal")
-            throw DomainBusinessException("Source should be personal")
+            throw DomainBusinessException("Source should be: personal")
 
         val personalRating = this.ratings.find { it.source == "personal" }
 

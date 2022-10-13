@@ -1,6 +1,7 @@
 package com.marcos012.movies.mappers
 
 import com.marcos012.movies.dto.MovieDTO
+import com.marcos012.movies.infra.projection.MovieListProjection
 import com.marcos012.movies.model.Movie
 
 class MovieMapper {
@@ -24,7 +25,17 @@ class MovieMapper {
             )
         }
 
-        fun toMovie(movie: MovieDTO): Movie {
+        fun toMovieProjection(movie: Movie): MovieListProjection {
+            return MovieListProjection(
+                movie.title,
+                movie.released.toString(),
+                movie.type,
+                movie.poster,
+                movie.id
+            )
+        }
+
+        fun dtoToMovie(movie: MovieDTO): Movie {
             return Movie(
                 movie.title,
                 movie.plot,

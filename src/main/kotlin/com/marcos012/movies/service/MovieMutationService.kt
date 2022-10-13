@@ -13,7 +13,7 @@ import javax.persistence.EntityNotFoundException
 @Service
 class MovieMutationService(val movieRepository: MovieRepository) : IMovieMutationService {
     override fun createMovie(command: MovieDTO): MovieDTO {
-        val convertedMovie = MovieMapper.toMovie(command)
+        val convertedMovie = MovieMapper.dtoToMovie(command)
         val movie = MovieMapper.toMovieDTO(movieRepository.save(convertedMovie))
 
         addHateoas(movie)
@@ -47,7 +47,7 @@ class MovieMutationService(val movieRepository: MovieRepository) : IMovieMutatio
 
     override fun changePersonalRating(id: Long, ratingDTO: RatingDTO) {
         val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
-        val rating = Rating(ratingDTO.source, ratingDTO.rating.toString())
+        val rating = Rating("personal", ratingDTO.rating.toString())
 
         movie.changePersonalRating(rating)
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.marcos012.movies.handlers.validation.DomainBusinessException
 import com.marcos012.movies.handlers.validation.ForbiddenException
 import feign.FeignException
+import feign.codec.DecodeException
 import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus.*
@@ -123,6 +124,12 @@ class HttpErrorExceptionHandler {
     @ResponseBody
     @ExceptionHandler(BadRequest::class)
     fun badRequestException(exception: BadRequest) = ApiError.fromMessage(FORBIDDEN, exception.message)
+
+
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    @ExceptionHandler(DecodeException::class)
+    fun decodeException(exception: BadRequest) = ApiError.fromMessage(INTERNAL_SERVER_ERROR, exception.message)
 
     private fun handleJsonMappingException(error: JsonMappingException): ResponseEntity<ApiError> {
         val maxLengthError = "Number max length"
