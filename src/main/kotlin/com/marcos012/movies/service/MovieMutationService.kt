@@ -11,9 +11,8 @@ import org.springframework.stereotype.Service
 import javax.persistence.EntityNotFoundException
 
 @Service
-class MovieMutationService(val movieRepository: MovieRepository) {
-
-    fun createMovie(command: MovieDTO): MovieDTO {
+class MovieMutationService(val movieRepository: MovieRepository) : IMovieMutationService {
+    override fun createMovie(command: MovieDTO): MovieDTO {
         val convertedMovie = MovieMapper.toMovie(command)
         val movie = MovieMapper.toMovieDTO(movieRepository.save(convertedMovie))
 
@@ -22,7 +21,7 @@ class MovieMutationService(val movieRepository: MovieRepository) {
         return movie
     }
 
-    fun updateMovie(id: Long, movieDTO: MovieDTO): MovieDTO {
+    override fun updateMovie(id: Long, movieDTO: MovieDTO): MovieDTO {
         val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
 
         movie.title = movieDTO.title
@@ -46,7 +45,7 @@ class MovieMutationService(val movieRepository: MovieRepository) {
         return convertedMovie
     }
 
-    fun changePersonalRating(id: Long, ratingDTO: RatingDTO) {
+    override fun changePersonalRating(id: Long, ratingDTO: RatingDTO) {
         val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
         val rating = Rating(ratingDTO.source, ratingDTO.rating.toString())
 
