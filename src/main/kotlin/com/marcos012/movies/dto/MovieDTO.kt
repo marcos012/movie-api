@@ -20,6 +20,6 @@ open class MovieDTO(
     var actors: String?,
     var director: String?,
     var runtime: String?,
-    var ratings: List<Rating>?,
+    var ratings: List<Rating>,
     var totalSeasons: String?
 ) : RepresentationModel<MovieDTO>()

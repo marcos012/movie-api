@@ -19,7 +19,7 @@ class MovieMapper {
                 movie.actors,
                 movie.director,
                 movie.runtime,
-                movie.ratings,
+                movie.ratings.toList(),
                 movie.totalSeasons
             )
         }
@@ -37,7 +37,7 @@ class MovieMapper {
                 movie.actors,
                 movie.director,
                 movie.runtime,
-                movie.ratings,
+                movie.ratings.toMutableSet(),
                 movie.totalSeasons
             )
         }
