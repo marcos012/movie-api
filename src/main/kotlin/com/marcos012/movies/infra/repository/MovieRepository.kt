@@ -17,6 +17,6 @@ interface MovieRepository: JpaRepository<Movie, Long>{
     )
     fun getMoviesFromUser(@Param("userId") userId: Long): Optional<List<Movie>>
 
-    @Query("SELECT * FROM Movie m WHERE UPPER(m.title) LIKE CONCAT('%',UPPER(:title),'%')", nativeQuery = true)
+    @Query("SELECT m.title, m.released, m.type, m.poster FROM Movie m WHERE UPPER(m.title) LIKE CONCAT('%',UPPER(:title),'%')", nativeQuery = true)
     fun findAllMovies(@Param("title") title: String?, pageable: Pageable): Page<Movie>
 }

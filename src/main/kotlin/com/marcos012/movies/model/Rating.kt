@@ -15,7 +15,7 @@ class Rating(
     var rating: String
 ) {
     @Id
-    @Column(name = "OID_RATING", nullable = false)
+    @Column(name = "RATING_ID", nullable = false)
     @GeneratedValue(generator = "movie_rating_seq", strategy = GenerationType.SEQUENCE)
     @GenericGenerator(name = "movie_rating_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
         parameters = [

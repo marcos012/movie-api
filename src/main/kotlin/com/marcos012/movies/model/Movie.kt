@@ -35,7 +35,7 @@ class Movie(
     @Column(name = "RUNTIME", length = 20, nullable = true)
     var runtime: String?,
     @OneToMany(cascade = [CascadeType.MERGE, CascadeType.PERSIST])
-    @JoinColumn(name = "OID_MOVIE", nullable = true)
+    @JoinColumn(name = "MOVIE_ID", nullable = true)
     var ratings: MutableSet<Rating> = hashSetOf(),
     @Column(name = "TOTAL_SEASONS", length = 3, nullable = true)
     var totalSeasons: String?

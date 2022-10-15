@@ -6,8 +6,8 @@ import javax.persistence.Embeddable
 
 @Embeddable
 class PlaylistId(
-    @Column(name = "OID_MOVIE", nullable = false, insertable = false, updatable = false)
+    @Column(name = "MOVIE_ID", nullable = false, insertable = false, updatable = false)
     private val movieId: Long,
-    @Column(name = "OID_USER", nullable = false, insertable = false, updatable = false)
+    @Column(name = "USER_ID", nullable = false, insertable = false, updatable = false)
     private val userId: Long
 ) : Serializable
