@@ -15,7 +15,7 @@ class Rating(
     var rating: String
 ) {
     @Id
-    @Column(name = "OID_RATING", nullable = false)
+    @Column(name = "RATING_ID", nullable = false)
     @GeneratedValue(generator = "movie_rating_seq", strategy = GenerationType.SEQUENCE)
     @GenericGenerator(name = "movie_rating_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
         parameters = [
@@ -24,6 +24,6 @@ class Rating(
             Parameter(name = "increment_size", value = "1")])
     var id: Long? = null
 
-    @Column(name = "OID_MOVIE", insertable = false, updatable = false)
+    @Column(name = "MOVIE_ID", insertable = false, updatable = false)
     private val movieId: Long? = null
 }

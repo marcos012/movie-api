@@ -1,11 +1,16 @@
 package com.marcos012.movies.service
 
+import com.marcos012.movies.controller.MovieQueryController
+import com.marcos012.movies.controller.PlaylistController
 import com.marcos012.movies.dto.MovieDTO
 import com.marcos012.movies.infra.repository.MovieRepository
 import com.marcos012.movies.infra.repository.PlaylistRepository
 import com.marcos012.movies.mappers.MovieMapper
+import com.marcos012.movies.model.Movie
 import com.marcos012.movies.model.Playlist
 import com.marcos012.movies.model.PlaylistId
+import org.springframework.hateoas.Link
+import org.springframework.hateoas.server.mvc.linkTo
 import org.springframework.stereotype.Service
 import javax.persistence.EntityNotFoundException
 
@@ -25,11 +30,18 @@ class PlaylistService(
 
         playlistRepository.save(playlist)
 
-        return MovieMapper.toMovieDTO(movie)
+        return MovieMapper.toMovieDTO(movie).add(getLinks(movie))
     }
 
     override fun removeMovie(movieId: Long, userId: Long) {
         movieRepository.findById(movieId).orElseThrow { EntityNotFoundException() }
         playlistRepository.deleteById(PlaylistId(movieId, userId))
+    }
+
+    private fun getLinks(movie: Movie): MutableList<Link> {
+        return mutableListOf(
+            linkTo<PlaylistController> { getMovies(movie.id!!)}.withSelfRel(),
+            linkTo<MovieQueryController> { getMovie(movie.id!!)}.withSelfRel(),
+        )
     }
 }

@@ -30,7 +30,7 @@ class PlaylistController(val playlistService: PlaylistService) {
     }
 
     @GetMapping
-    fun getMMovies(@RequestHeader(AUTHORIZATION) userId: Long): ResponseEntity<List<MovieDTO>> {
+    fun getMovies(@RequestHeader(AUTHORIZATION) userId: Long): ResponseEntity<List<MovieDTO>> {
         val movies = playlistService.getMovies(userId)
         return ResponseEntity(movies, HttpStatus.OK)
     }

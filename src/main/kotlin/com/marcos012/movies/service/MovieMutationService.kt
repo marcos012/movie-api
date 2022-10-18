@@ -3,22 +3,36 @@ package com.marcos012.movies.service
 import com.marcos012.movies.controller.MovieQueryController
 import com.marcos012.movies.dto.MovieDTO
 import com.marcos012.movies.dto.RatingDTO
+import com.marcos012.movies.infra.repository.ActorRepository
+import com.marcos012.movies.infra.repository.DirectorRepository
 import com.marcos012.movies.infra.repository.MovieRepository
+import com.marcos012.movies.mappers.ActorMapper
 import com.marcos012.movies.mappers.MovieMapper
+import com.marcos012.movies.model.Actor
+import com.marcos012.movies.model.Director
 import com.marcos012.movies.model.Rating
 import org.springframework.hateoas.server.mvc.linkTo
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import javax.persistence.EntityNotFoundException
 
 @Service
-class MovieMutationService(val movieRepository: MovieRepository) : IMovieMutationService {
+class MovieMutationService(
+    val movieRepository: MovieRepository,
+    val actorRepository: ActorRepository,
+    val directorRepository: DirectorRepository
+) : IMovieMutationService {
     override fun createMovie(command: MovieDTO): MovieDTO {
-        val convertedMovie = MovieMapper.dtoToMovie(command)
-        val movie = MovieMapper.toMovieDTO(movieRepository.save(convertedMovie))
+        val movie = MovieMapper.dtoToMovie(command)
 
-        addHateoas(movie)
+        movie.director = getDirector(command.director)
+        getActors(command.actors).forEach { movie.addActor(it) }
 
-        return movie
+        val movieDTO = MovieMapper.toMovieDTO(movieRepository.save(movie))
+
+        addHateoas(movieDTO)
+
+        return movieDTO
     }
 
     override fun updateMovie(id: Long, movieDTO: MovieDTO): MovieDTO {
@@ -32,20 +46,21 @@ class MovieMutationService(val movieRepository: MovieRepository) : IMovieMutatio
         movie.producer = movieDTO.producer
         movie.poster = movieDTO.poster
         movie.type = movieDTO.type
-        movie.actors = movieDTO.actors
-        movie.director = movieDTO.director
+        movie.director = getDirector(movieDTO.director)
         movie.runtime = movieDTO.runtime
         movie.ratings = movieDTO.ratings.toMutableSet()
         movie.totalSeasons = movieDTO.totalSeasons
+        movie.updatedAt = LocalDateTime.now()
 
-        val convertedMovie = MovieMapper.toMovieDTO(movieRepository.save(movie))
+        getActors(movieDTO.actors).forEach { movie.addActor(it) }
+        addHateoas(movieDTO)
 
-        addHateoas(convertedMovie)
+        movieRepository.save(movie)
 
-        return convertedMovie
+        return movieDTO
     }
 
-    override fun changePersonalRating(id: Long, ratingDTO: RatingDTO) {
+    override fun changePersonalRating(id: Long, ratingDTO: RatingDTO): MovieDTO {
         val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
         val rating = Rating("personal", ratingDTO.rating.toString())
 
@@ -54,6 +69,21 @@ class MovieMutationService(val movieRepository: MovieRepository) : IMovieMutatio
         val convertedMovie = MovieMapper.toMovieDTO(movieRepository.save(movie))
 
         addHateoas(convertedMovie)
+
+        return convertedMovie
+    }
+
+    fun getActors(actors: String?): Set<Actor> {
+        return ActorMapper
+            .toActor(actors)
+            .map { actorRepository.findByName(it.name).orElse(Actor(it.name)) }
+            .toSet()
+    }
+
+    fun getDirector(director: String?): Director? {
+        return if (director != null)
+            directorRepository.findByName(director).orElse(Director(director))
+        else null
     }
 
     private fun addHateoas(movie: MovieDTO) {
