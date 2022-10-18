@@ -23,10 +23,7 @@ class MovieQueryService(
     val apiKey: String = ""
 
     override fun getAllMovies(page: PageRequest, title: String): Page<MovieListProjection> {
-        val movies =  movieRepository.findAllMovies(title, page)
-        return movies.map {
-            MovieMapper.toMovieProjection(it)
-        }
+        return movieRepository.findAllMovies(title, page)
     }
 
     override fun getMovie(id: Long): MovieDTO {

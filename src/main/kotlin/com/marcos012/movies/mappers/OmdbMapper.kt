@@ -6,14 +6,17 @@ import com.marcos012.movies.infra.projection.OmdbMovieProjection
 import com.marcos012.movies.infra.projection.SearchResult
 import org.springframework.format.datetime.DateFormatter
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
 import java.util.*
 
 class OmdbMapper {
     companion object {
         fun toMovieList(omdbProjection: SearchResult): MovieListProjection {
+            val movieDate = DateFormatter("yyyy").parse(omdbProjection.Year, Locale.US)
+
             return MovieListProjection(
                 omdbProjection.Title,
-                omdbProjection.Year,
+                movieDate,
                 enumValueOf(omdbProjection.Type.uppercase()),
                 omdbProjection.Poster,
                 null,

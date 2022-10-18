@@ -24,6 +24,6 @@ class Rating(
             Parameter(name = "increment_size", value = "1")])
     var id: Long? = null
 
-    @Column(name = "OID_MOVIE", insertable = false, updatable = false)
+    @Column(name = "MOVIE_ID", insertable = false, updatable = false)
     private val movieId: Long? = null
 }
