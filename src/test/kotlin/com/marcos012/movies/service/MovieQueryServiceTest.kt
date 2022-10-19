@@ -1,6 +1,5 @@
 package com.marcos012.movies.service
 
-import com.marcos012.movies.handlers.validation.DomainBusinessException
 import com.marcos012.movies.infra.client.IOmdbClient
 import com.marcos012.movies.infra.projection.MovieListProjection
 import com.marcos012.movies.infra.repository.MovieRepository
@@ -15,7 +14,6 @@ import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.data.domain.Page
