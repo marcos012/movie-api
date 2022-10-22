@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("v1/movies")
-class MovieMutationController(val movieService: MovieMutationService, val movieRepository: MovieRepository) {
+class MovieMutationController(val movieService: MovieMutationService) {
 
     @PostMapping
     fun createMovie(@RequestBody movieDTO: MovieDTO): ResponseEntity<MovieDTO> {
@@ -35,7 +35,7 @@ class MovieMutationController(val movieService: MovieMutationService, val movieR
 
     @DeleteMapping("{id}")
     fun deleteMovie(@PathVariable id: Long): ResponseEntity<Void> {
-        movieRepository.deleteById(id)
+        movieService.deleteMovie(id)
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 }

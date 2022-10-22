@@ -11,7 +11,6 @@ class Rating(
     @Column(name = "SOURCE")
     var source: String,
     @Column(name = "RATING")
-    @JsonProperty("value")
     var rating: String
 ) {
     @Id
@@ -26,4 +25,27 @@ class Rating(
 
     @Column(name = "MOVIE_ID", insertable = false, updatable = false)
     private val movieId: Long? = null
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Rating
+
+        if (source != other.source) return false
+        if (rating != other.rating) return false
+        if (id != other.id) return false
+        if (movieId != other.movieId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = source.hashCode()
+        result = 31 * result + rating.hashCode()
+        result = 31 * result + (id?.hashCode() ?: 0)
+        result = 31 * result + (movieId?.hashCode() ?: 0)
+        return result
+    }
+
+
 }

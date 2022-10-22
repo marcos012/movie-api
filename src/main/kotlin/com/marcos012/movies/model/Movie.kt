@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
+
 @Entity
 @Table(name = "MOVIE")
 class Movie(
@@ -73,6 +74,13 @@ class Movie(
             personalRating.rating = rating.rating
         else
             this.ratings.add(rating)
+    }
+
+    @PreRemove
+    fun removeActorsFromMovie() {
+        actors.forEach {
+            it.movies.remove(this)
+        }
     }
 
     fun addActor(actor: Actor) {

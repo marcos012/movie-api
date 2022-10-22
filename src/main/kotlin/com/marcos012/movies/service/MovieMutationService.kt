@@ -8,6 +8,7 @@ import com.marcos012.movies.infra.repository.DirectorRepository
 import com.marcos012.movies.infra.repository.MovieRepository
 import com.marcos012.movies.mappers.ActorMapper
 import com.marcos012.movies.mappers.MovieMapper
+import com.marcos012.movies.mappers.RatingMapper
 import com.marcos012.movies.model.Actor
 import com.marcos012.movies.model.Director
 import com.marcos012.movies.model.Rating
@@ -37,6 +38,7 @@ class MovieMutationService(
 
     override fun updateMovie(id: Long, movieDTO: MovieDTO): MovieDTO {
         val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
+        val ratings = movieDTO.ratings.map { RatingMapper.dtoToRating(it) }.toMutableSet()
 
         movie.title = movieDTO.title
         movie.plot = movieDTO.plot
@@ -48,11 +50,13 @@ class MovieMutationService(
         movie.type = movieDTO.type
         movie.director = getDirector(movieDTO.director)
         movie.runtime = movieDTO.runtime
-        movie.ratings = movieDTO.ratings.toMutableSet()
+        movie.ratings = ratings
         movie.totalSeasons = movieDTO.totalSeasons
         movie.updatedAt = LocalDateTime.now()
+        movieDTO.id = id
 
         getActors(movieDTO.actors).forEach { movie.addActor(it) }
+
         addHateoas(movieDTO)
 
         movieRepository.save(movie)
@@ -73,6 +77,14 @@ class MovieMutationService(
         return convertedMovie
     }
 
+    override fun deleteMovie(id: Long) {
+        val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
+
+        movie.removeActorsFromMovie()
+
+        movieRepository.deleteById(id)
+    }
+
     fun getActors(actors: String?): Set<Actor> {
         return ActorMapper
             .toActor(actors)
@@ -87,7 +99,7 @@ class MovieMutationService(
     }
 
     private fun addHateoas(movie: MovieDTO) {
-        val link = linkTo<MovieQueryController> { getMovie(movie.id) }.withSelfRel()
+        val link = linkTo<MovieQueryController> { getMovie(movie.id!!) }.withSelfRel()
         movie.add(link)
     }
 }

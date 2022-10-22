@@ -5,7 +5,7 @@ import com.marcos012.movies.providers.MovieDataProvider
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
-class MovieTest {
+internal class MovieTest {
     @Test
     fun `should add personal rating to movie`() {
         val movie = MovieDataProvider.getMovie()
