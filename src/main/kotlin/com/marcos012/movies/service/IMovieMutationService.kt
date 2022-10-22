@@ -7,4 +7,5 @@ interface IMovieMutationService {
     fun createMovie(command: MovieDTO): MovieDTO
     fun updateMovie(id: Long, movieDTO: MovieDTO): MovieDTO
     fun changePersonalRating(id: Long, ratingDTO: RatingDTO): MovieDTO
+    fun deleteMovie(id: Long)
 }

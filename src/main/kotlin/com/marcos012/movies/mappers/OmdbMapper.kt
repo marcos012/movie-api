@@ -40,7 +40,7 @@ class OmdbMapper {
                 omdbProjection.Actors,
                 omdbProjection.Director,
                 omdbProjection.Runtime,
-                omdbProjection.Ratings.map { RatingMapper.toRating(it) },
+                omdbProjection.Ratings.map { RatingMapper.projectionToMovieRatingDTO(it) },
                 omdbProjection.TotalSeasons,
 
             )

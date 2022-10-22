@@ -8,7 +8,8 @@ import com.marcos012.movies.model.Movie
 class MovieMapper {
     companion object {
         fun toMovieDTO(movie: Movie): MovieDTO {
-            val actors = movie.actors.joinToString { it.name }
+            val actors = movie.actors.sortedBy { it.name }.joinToString { it.name }
+            val ratings = movie.ratings.map { RatingMapper.toMovieRatingDTO(it) }
 
             return MovieDTO(
                 movie.id!!,
@@ -23,7 +24,7 @@ class MovieMapper {
                 actors,
                 movie.director?.name,
                 movie.runtime,
-                movie.ratings.toList(),
+                ratings,
                 movie.totalSeasons
             )
         }
@@ -39,6 +40,8 @@ class MovieMapper {
         }
 
         fun dtoToMovie(movie: MovieDTO): Movie {
+            val ratings = movie.ratings.map { RatingMapper.dtoToRating(it) }.toMutableSet()
+
             return Movie(
                 title = movie.title,
                 plot = movie.plot,
@@ -50,7 +53,7 @@ class MovieMapper {
                 type = movie.type,
                 runtime = movie.runtime,
                 totalSeasons = movie.totalSeasons,
-                ratings = movie.ratings.toMutableSet(),
+                ratings = ratings,
             )
         }
     }
