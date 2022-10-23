@@ -2,26 +2,43 @@ package com.marcos012.movies.service
 
 import com.marcos012.movies.controller.MovieQueryController
 import com.marcos012.movies.dto.MovieDTO
+import com.marcos012.movies.dto.RatingDTO
+import com.marcos012.movies.infra.repository.ActorRepository
+import com.marcos012.movies.infra.repository.DirectorRepository
 import com.marcos012.movies.infra.repository.MovieRepository
+import com.marcos012.movies.mappers.ActorMapper
 import com.marcos012.movies.mappers.MovieMapper
+import com.marcos012.movies.mappers.RatingMapper
+import com.marcos012.movies.model.Actor
+import com.marcos012.movies.model.Director
+import com.marcos012.movies.model.Rating
 import org.springframework.hateoas.server.mvc.linkTo
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import javax.persistence.EntityNotFoundException
 
 @Service
-class MovieMutationService(private val movieRepository: MovieRepository) {
+class MovieMutationService(
+    val movieRepository: MovieRepository,
+    val actorRepository: ActorRepository,
+    val directorRepository: DirectorRepository
+) : IMovieMutationService {
+    override fun createMovie(command: MovieDTO): MovieDTO {
+        val movie = MovieMapper.dtoToMovie(command)
 
-    fun createMovie(command: MovieDTO): MovieDTO {
-        val convertedMovie = MovieMapper.toMovie(command)
-        val movie = MovieMapper.toMovieDTO(movieRepository.save(convertedMovie))
+        movie.director = getDirector(command.director)
+        getActors(command.actors).forEach { movie.addActor(it) }
 
-        addHateoas(movie)
+        val movieDTO = MovieMapper.toMovieDTO(movieRepository.save(movie))
 
-        return movie
+        addHateoas(movieDTO)
+
+        return movieDTO
     }
 
-    fun updateMovie(id: Long, movieDTO: MovieDTO): MovieDTO {
+    override fun updateMovie(id: Long, movieDTO: MovieDTO): MovieDTO {
         val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
+        val ratings = movieDTO.ratings.map { RatingMapper.dtoToRating(it) }.toMutableSet()
 
         movie.title = movieDTO.title
         movie.plot = movieDTO.plot
@@ -31,11 +48,27 @@ class MovieMutationService(private val movieRepository: MovieRepository) {
         movie.producer = movieDTO.producer
         movie.poster = movieDTO.poster
         movie.type = movieDTO.type
-        movie.actors = movieDTO.actors
-        movie.director = movieDTO.director
+        movie.director = getDirector(movieDTO.director)
         movie.runtime = movieDTO.runtime
-        movie.ratings = movieDTO.ratings
+        movie.ratings = ratings
         movie.totalSeasons = movieDTO.totalSeasons
+        movie.updatedAt = LocalDateTime.now()
+        movieDTO.id = id
+
+        getActors(movieDTO.actors).forEach { movie.addActor(it) }
+
+        addHateoas(movieDTO)
+
+        movieRepository.save(movie)
+
+        return movieDTO
+    }
+
+    override fun changePersonalRating(id: Long, ratingDTO: RatingDTO): MovieDTO {
+        val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
+        val rating = Rating("personal", ratingDTO.rating.toString())
+
+        movie.changePersonalRating(rating)
 
         val convertedMovie = MovieMapper.toMovieDTO(movieRepository.save(movie))
 
@@ -44,8 +77,29 @@ class MovieMutationService(private val movieRepository: MovieRepository) {
         return convertedMovie
     }
 
+    override fun deleteMovie(id: Long) {
+        val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
+
+        movie.removeActorsFromMovie()
+
+        movieRepository.deleteById(id)
+    }
+
+    fun getActors(actors: String?): Set<Actor> {
+        return ActorMapper
+            .toActor(actors)
+            .map { actorRepository.findByName(it.name).orElse(Actor(it.name)) }
+            .toSet()
+    }
+
+    fun getDirector(director: String?): Director? {
+        return if (director != null)
+            directorRepository.findByName(director).orElse(Director(director))
+        else null
+    }
+
     private fun addHateoas(movie: MovieDTO) {
-        val link = linkTo<MovieQueryController> { getMovie(movie.id) }.withSelfRel()
+        val link = linkTo<MovieQueryController> { getMovie(movie.id!!) }.withSelfRel()
         movie.add(link)
     }
 }

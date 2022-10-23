@@ -2,10 +2,11 @@ package com.marcos012.movies.service
 
 import com.marcos012.movies.dto.MovieDTO
 import com.marcos012.movies.infra.client.IOmdbClient
+import com.marcos012.movies.infra.projection.MovieListProjection
 import com.marcos012.movies.infra.projection.OmdbMovieProjection
-import com.marcos012.movies.infra.projection.OmdbMovieSearchProjection
 import com.marcos012.movies.mappers.MovieMapper
 import com.marcos012.movies.infra.repository.MovieRepository
+import com.marcos012.movies.mappers.OmdbMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -16,27 +17,27 @@ import javax.persistence.EntityNotFoundException
 class MovieQueryService(
     private val movieRepository: MovieRepository,
     private val omdbClient: IOmdbClient
-) {
+) : IMovieQueryService {
 
     @Value("\${omdb.apikey}")
     val apiKey: String = ""
 
-    fun getAllMovies(page: PageRequest): Page<MovieDTO> {
-        return movieRepository.findAll(page).map {
-            MovieMapper.toMovieDTO(it)
-        }
+    override fun getAllMovies(page: PageRequest, title: String): Page<MovieListProjection> {
+        return movieRepository.findAllMovies(title, page)
     }
 
-    fun getMovie(id: Long): MovieDTO {
+    override fun getMovie(id: Long): MovieDTO {
         val movie = movieRepository.findById(id).orElseThrow { EntityNotFoundException() }
         return MovieMapper.toMovieDTO(movie)
     }
 
-    fun getMovieByTitle(title: String): OmdbMovieProjection {
-        return omdbClient.getMovieByTitle(apiKey, title)
+    override fun getMovieByTitle(title: String): MovieDTO {
+        return OmdbMapper.toMovieDTO(omdbClient.getMovieByTitle(apiKey, title))
     }
 
-    fun searchMoviesByTitle(title: String): OmdbMovieSearchProjection {
-        return omdbClient.searchMoviesByTitle(apiKey, title)
+    override fun searchMoviesByTitle(title: String): List<MovieListProjection> {
+        return omdbClient.searchMoviesByTitle(apiKey, title).search.map {
+            OmdbMapper.toMovieList(it)
+        }
     }
 }

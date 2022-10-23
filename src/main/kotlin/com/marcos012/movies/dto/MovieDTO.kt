@@ -8,7 +8,7 @@ import java.util.*
 
 
 open class MovieDTO(
-    val id: Long,
+    var id: Long?,
     var title: String,
     var plot: String,
     var genre: String,
@@ -20,6 +20,6 @@ open class MovieDTO(
     var actors: String?,
     var director: String?,
     var runtime: String?,
-    var ratings: List<Rating>?,
+    var ratings: List<MovieRatingDTO>,
     var totalSeasons: String?
 ) : RepresentationModel<MovieDTO>()
