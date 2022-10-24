@@ -32,7 +32,6 @@ internal class MovieQueryControllerIT : BaseControllerIT() {
             .andExpect(jsonPath("$.content.[0].title", equalTo("Avengers")))
             .andExpect(jsonPath("$.content.[0].type", equalTo("MOVIE")))
             .andExpect(jsonPath("$.content.[0].poster", equalTo("poster.png")))
-            .andExpect(jsonPath("$.content.[0].released", equalTo("2012-04-03T03:00:00.000+00:00")))
     }
 
     @Test
