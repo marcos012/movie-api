@@ -37,5 +37,3 @@ Java 11
 
 ## License
 [MIT - © Marcos Paulo 2022](LICENSE)
-
-<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVPNy3LTg=/?moveToViewport=-780,-413,1040,916&embedId=50002244074" frameborder="0" scrolling="no" allowfullscreen></iframe>
