@@ -1,7 +1,13 @@
 <div align="center">
   <img src="https://i.imgur.com/2waLFLF.png" width="400px" alt="NLW eSports"/>
-  <p>API of movies</p>
+    <p>
+      <a href="https://dl.circleci.com/status-badge/redirect/gh/marcos012/movie-api/tree/main">
+        <img alt="movie api status" src="https://dl.circleci.com/status-badge/img/gh/marcos012/movie-api/tree/main.svg?style=svg" />
+      </a>
+      <img alt="LICENSE" src="https://img.shields.io/badge/License-MIT-white.svg" />
+    </p>
 </div>
+
 
 ## Stack
 ![Kotlin](https://img.shields.io/static/v1?style=for-the-badge&message=Kotlin&color=7F52FF&logo=Kotlin&logoColor=FFFFFF&label=)
